@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}Bienvenido a Extensión DUOC UC{% endblock %}
+
+{% block head %}
+  <!-- Incluimos una librería ligera para animaciones al hacer scroll -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    .hero {
+      background-image: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1470&q=80');
+      background-size: cover;
+      background-position: center;
+      height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .hero h1 {
+      font-size: 3.5em;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    }
+
+    .hero p {
+      font-size: 1.5em;
+      margin-top: 15px;
+    }
+
+    .seccion {
+      padding: 60px 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .seccion h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.5em;
+      color: #003f7d;
+    }
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+      width: 280px;
+      transition: transform 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+    }
+
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .card .contenido {
+      padding: 15px;
+    }
+
+    .card .contenido h3 {
+      margin-top: 0;
+      color: #003f7d;
+    }
+
+    .cta {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .cta a {
+      background-color: #003f7d;
+      color: white;
+      padding: 12px 25px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-size: 1.2em;
+      transition: background-color 0.3s;
+    }
+
+    .cta a:hover {
+      background-color: #005bb5;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+  <!-- Sección principal con imagen de fondo -->
+  <section class="hero" data-aos="fade-in">
+    <div>
+      <h1>Bienvenido a Extensión DUOC UC</h1>
+      <p>Espacios, innovación y conexión para tus ideas y eventos</p>
+    </div>
+  </section>
+
+  <!-- Sección de características -->
+  <section class="seccion" data-aos="fade-up">
+    <h2>¿Quieres realizar un evento en Duoc?</h2>
+    <div class="cards">
+      <div class="card" data-aos="fade-up" data-aos-delay="100">
+        <img src="	https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1470&q=80" alt="Espacios modernos">
+        <div class="contenido">
+          <h3>Espacios Modernos</h3>
+          <p>Salas, auditorios y lugares equipados con tecnología para tus necesidades.</p>
+        </div>
+      </div>
+      <div class="card" data-aos="fade-up" data-aos-delay="200">
+        <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=600&q=80" alt="Apoyo profesional">
+        <div class="contenido">
+          <h3>Apoyo Profesional</h3>
+          <p>Te acompañamos en todo el proceso para garantizar el éxito de tu evento.</p>
+        </div>
+      </div>
+      <div class="card" data-aos="fade-up" data-aos-delay="300">
+        <img src="https://images.unsplash.com/photo-1556155092-490a1ba16284?auto=format&fit=crop&w=1470&q=80" alt="Acceso simple">
+        <div class="contenido">
+          <h3>Solicita en Línea</h3>
+          <p>Con solo unos clics puedes pedir tu espacio sin trámites engorrosos.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta" data-aos="zoom-in">
+      <a href="/solicitar_evento">¡Solicita tu espacio ahora!</a>
+    </div>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    AOS.init({
+      duration: 1000,
+      once: true,
+    });
+  </script>
+{% endblock %}

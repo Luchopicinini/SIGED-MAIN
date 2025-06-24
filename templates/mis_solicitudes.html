@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Solicitudes{% endblock %}
+
+{% block content %}
+<h2 style="text-align:center;">Mis Solicitudes</h2>
+
+{% if solicitudes %}
+<table border="1" style="width:100%; border-collapse: collapse;">
+  <thead>
+    <tr style="background-color:#003f7d; color:white;">
+      <th>Nombre</th>
+      <th>Fecha</th>
+      <th>Hora</th>
+      <th>Lugar</th>
+      <th>Estado</th>
+      <th>Descripción</th>
+      <th>Materiales</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for solicitud in solicitudes %}
+    <tr>
+      <td>{{ solicitud[1] }}</td>
+      <td>{{ solicitud[2] }}</td>
+      <td>{{ solicitud[3] }}</td>
+      <td>{{ solicitud[4] }}</td>
+      <td>
+        {% if solicitud[5] == 'Pendiente' %}
+          <span style="color: orange; font-weight: bold;">Pendiente</span>
+        {% elif solicitud[5] == 'Aprobado' %}
+          <span style="color: green; font-weight: bold;">Aprobado</span>
+        {% elif solicitud[5] == 'Rechazado' %}
+          <span style="color: red; font-weight: bold;">Rechazado</span>
+        {% else %}
+          {{ solicitud[5] }}
+        {% endif %}
+      </td>
+      <td>{{ solicitud[6] }}</td>
+      <td>{{ solicitud[7] }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p style="text-align:center;">No tienes solicitudes realizadas aún.</p>
+{% endif %}
+
+<a href="{{ url_for('solicitar_evento') }}" style="display:block; text-align:center; margin-top:20px;">Nueva Solicitud</a>
+
+{% endblock %}

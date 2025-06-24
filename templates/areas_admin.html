@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Áreas Administrativas</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #f4f6fa;
+    }
+
+    .card-area {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-area:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      color: #0d6efd;
+    }
+
+    .area-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+
+  {% include 'navbar.html' %}
+
+<div class="row g-4">
+
+  <!-- Tarjeta 1: Área de Aseo -->
+  <div class="col-md-4">
+    <a href="{{ url_for('formulario_area', area='Área de Aseo') }}" class="text-decoration-none text-dark">
+      <div class="card card-area text-center p-4">
+        <div class="card-icon mb-2">
+          <i class="bi bi-bucket"></i>
+        </div>
+        <div class="area-title">Área de Aseo</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Tarjeta 2: Área de Gestión Inmobiliaria -->
+  <div class="col-md-4">
+    <a href="{{ url_for('formulario_area', area='Área de Gestión Inmobiliaria') }}" class="text-decoration-none text-dark">
+      <div class="card card-area text-center p-4">
+        <div class="card-icon mb-2">
+          <i class="bi bi-buildings"></i>
+        </div>
+        <div class="area-title">Área de Gestión Inmobiliaria</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Tarjeta 3: Coordinador de Carrera -->
+  <div class="col-md-4">
+    <a href="{{ url_for('formulario_area', area='Coordinador de Carrera') }}" class="text-decoration-none text-dark">
+      <div class="card card-area text-center p-4">
+        <div class="card-icon mb-2">
+          <i class="bi bi-person-vcard"></i>
+        </div>
+        <div class="area-title">Coordinador de Carrera</div>
+      </div>
+    </a>
+  </div>
+
+</div>
+
+<div class="container my-4 text-center">
+    <a href="https://docs.google.com/spreadsheets/d/1BR9aGyRrKNw_EEb9IOrbri-y0ynmGIPV3PynXk3tJ0M/edit?usp=sharing" 
+       target="_blank" 
+       class="btn btn-success">
+      <i class="bi bi-file-earmark-spreadsheet"></i> Abrir Excel en línea
+    </a>
+  </div>
+
+
+  <div class="container my-4 text-center">
+    <a href="https://docs.google.com/spreadsheets/d/1BR9aGyRrKNw_EEb9IOrbri-y0ynmGIPV3PynXk3tJ0M/edit?usp=sharing" 
+       target="_blank" 
+       class="btn btn-success">
+      <i class="bi bi-file-earmark-spreadsheet"></i> Stock en linea
+      
+    </a>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

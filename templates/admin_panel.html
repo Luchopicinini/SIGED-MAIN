@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel Admin - SIGED</title>
+  <!-- Bootstrap CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+
+<!-- Barra de navegación personalizada -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('admin_panel') }}">SIGED - Panel Admin</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarOpciones" aria-controls="navbarOpciones" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarOpciones">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{{ url_for('admin_panel') }}">Solicitudes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('solicitar_evento') }}">Solicitar Evento</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://tu-enlace-excel.com/archivo.xlsx" target="_blank">Lugares y Elementos</a>
+        </li>
+      </ul>
+      <div class="d-flex">
+        <a href="{{ url_for('logout') }}" class="btn btn-outline-light">Cerrar sesión</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Contenido principal -->
+<div class="container mt-4">
+  <h2 class="mb-4">Solicitudes de Eventos</h2>
+
+  <table class="table table-striped table-hover align-middle">
+    <thead class="table-primary">
+      <tr>
+        <th>ID</th>
+        <th>Nombre Evento</th>
+        <th>Tipo Usuario</th>
+        <th>Prioridad</th>
+        <th>Fecha</th>
+        <th>Hora</th>
+        <th>Lugar</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in solicitudes %}
+      <tr>
+        <td>{{ s[0] }}</td>
+        <td>{{ s[1] }}</td>
+        <td>{{ s[2] }}</td>
+        <td>
+          {% if s[3] == 3 %}
+            <span class="badge bg-danger">Alta</span>
+          {% elif s[3] == 2 %}
+            <span class="badge bg-warning text-dark">Media</span>
+          {% else %}
+            <span class="badge bg-secondary">Baja</span>
+          {% endif %}
+        </td>
+        <td>{{ s[4] }}</td>
+        <td>{{ s[5] }}</td>
+        <td>{{ s[6] }}</td>
+        <td>
+          {% if s[7] == 'Pendiente' %}
+            <span class="badge bg-info text-dark">{{ s[7] }}</span>
+          {% elif s[7] == 'Aprobado' %}
+            <span class="badge bg-success">{{ s[7] }}</span>
+          {% elif s[7] == 'En revisión' %}
+            <span class="badge bg-primary">{{ s[7] }}</span>
+          {% else %}
+            <span class="badge bg-danger">{{ s[7] }}</span>
+          {% endif %}
+        </td>
+        <td>
+          <form action="{{ url_for('cambiar_estado', id=s[0]) }}" method="POST" class="d-flex gap-2 align-items-center">
+            <select name="nuevo_estado" class="form-select form-select-sm" style="width: 130px;">
+              <option value="Pendiente" {% if s[7] == 'Pendiente' %}selected{% endif %}>Pendiente</option>
+              <option value="En revisión" {% if s[7] == 'En revisión' %}selected{% endif %}>En revisión</option>
+              <option value="Aprobado" {% if s[7] == 'Aprobado' %}selected{% endif %}>Aprobado</option>
+              <option value="Rechazado" {% if s[7] == 'Rechazado' %}selected{% endif %}>Rechazado</option>
+            </select>
+            <button type="submit" class="btn btn-sm btn-primary">Actualizar</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Bootstrap JS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

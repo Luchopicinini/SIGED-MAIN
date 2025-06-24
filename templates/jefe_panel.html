@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel Jefe - SIGED</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+
+  {% include 'navbar.html' %}
+
+  <div class="container mt-4">
+    <h2 class="mb-4">Solicitudes de Eventos</h2>
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>Nombre Evento</th>
+          <th>Tipo Usuario</th>
+          <th>Prioridad</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Lugar</th>
+          <th>Estado</th>
+          <th>Descripción</th>
+          <th>Materiales</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in solicitudes %}
+        <tr>
+          <td>{{ s[0] }}</td>
+          <td>{{ s[1] }}</td>
+          <td>{{ s[2] }}</td>
+          <td>
+            {% if s[3] == 3 %}
+              <span class="badge bg-danger">Alta</span>
+            {% elif s[3] == 2 %}
+              <span class="badge bg-warning text-dark">Media</span>
+            {% else %}
+              <span class="badge bg-secondary">Baja</span>
+            {% endif %}
+          </td>
+          <td>{{ s[4] }}</td>
+          <td>{{ s[5] }}</td>
+          <td>{{ s[6] }}</td>
+          <td>
+            {% if s[7] == 'Pendiente' %}
+              <span class="badge bg-info text-dark">{{ s[7] }}</span>
+            {% elif s[7] == 'Aprobado' %}
+              <span class="badge bg-success">{{ s[7] }}</span>
+            {% elif s[7] == 'En revisión' %}
+              <span class="badge bg-primary">{{ s[7] }}</span>
+            {% else %}
+              <span class="badge bg-danger">{{ s[7] }}</span>
+            {% endif %}
+          </td>
+          <td>{{ s[8] }}</td>
+          <td>{{ s[9] }}</td>
+          <td>
+            <td>
+  <form action="{{ url_for('cambiar_estado', id=s[0]) }}" method="POST" class="d-flex gap-2 align-items-center">
+    <select name="nuevo_estado" class="form-select form-select-sm" style="width: 130px;">
+      <option value="Pendiente" {% if s[7] == 'Pendiente' %}selected{% endif %}>Pendiente</option>
+      <option value="En revisión" {% if s[7] == 'En revisión' %}selected{% endif %}>En revisión</option>
+      <option value="Aprobado" {% if s[7] == 'Aprobado' %}selected{% endif %}>Aprobado</option>
+      <option value="Rechazado" {% if s[7] == 'Rechazado' %}selected{% endif %}>Rechazado</option>
+    </select>
+    <button type="submit" class="btn btn-sm btn-primary">Actualizar</button>
+  </form>
+
+  <!-- Formulario para eliminar solicitud -->
+  <form action="{{ url_for('eliminar_solicitud', id=s[0]) }}" method="POST" style="display:inline; margin-left: 8px;" 
+        onsubmit="return confirm('¿Seguro que quieres eliminar esta solicitud?');">
+    <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+  </form>
+</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+
+{% block title %}Solicitar Evento{% endblock %}
+
+{% block content %}
+<h2 style="text-align:center;">Solicitar Evento</h2>
+
+<div id="calendar"></div>
+
+<form id="formEvento" method="POST" action="{{ url_for('enviar') }}">
+  <label>Nombre del evento:</label>
+  <input type="text" name="nombre" required />
+
+  <label>Fecha Seleccionada:</label>
+  <input type="text" id="fechaSeleccionada" name="fecha" readonly required />
+
+  <label>Lugar:</label>
+  <select id="lugar" name="lugar" required>
+    <option value="">-- Selecciona un lugar --</option>
+    <option value="Auditorio">Auditorio</option>
+    <option value="Biblioteca">Biblioteca</option>
+    <option value="Coliseo">Coliseo</option>
+    <option value="Hall 2">Hall 2</option>
+    <option value="Sala Multimedia">Sala Multimedia</option>
+  </select>
+
+  <div id="horarioContainer"></div>
+  <div id="elementosContainer"></div>
+
+  <label>Descripción del evento:</label>
+  <textarea name="descripcion" rows="4" required></textarea>
+
+  <!-- Campo oculto para enviar los elementos seleccionados -->
+  <input type="hidden" name="materiales" id="materiales" />
+
+  <!-- Campo oculto para enviar tipo_usuario desde la vista -->
+  <input type="hidden" name="tipo_usuario" value="{{ tipo_usuario }}" />
+
+  <button type="submit">Enviar solicitud</button>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<style>
+  /* Estilo para fechas ocupadas */
+  .fc-daygrid-day.fc-day-disabled {
+    background-color: #f8d7da !important; /* rojo suave */
+    cursor: not-allowed;
+  }
+  /* Estilo para tooltip */
+  .fc-event {
+    cursor: default !important;
+  }
+
+  /* Estilos para checklist prolijo */
+  .elementos-disponibles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .elementos-disponibles label {
+    background: #f9f9f9;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    user-select: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: background-color 0.2s;
+  }
+  .elementos-disponibles label:hover {
+    background-color: #e6f0ff;
+  }
+  .elementos-disponibles input[type="checkbox"] {
+    accent-color: #003f7d;
+    width: 18px;
+    height: 18px;
+  }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const eventosBackend = {{ eventos | tojson | safe }};
+
+    // Preparamos los eventos para el calendario
+    const eventosParaCalendario = eventosBackend.map(ev => ({
+      title: ev.nombre,
+      start: ev.fecha,
+      allDay: true,
+      display: 'background', // Esto pinta el fondo de la fecha
+      backgroundColor: '#f8d7da', // rojo suave para reservado
+      borderColor: '#f5c2c7',
+      extendedProps: {
+        tooltip: ev.nombre
+      }
+    }));
+
+    // Creamos un Set de fechas ocupadas para fácil chequeo
+    const fechasOcupadasSet = new Set(eventosBackend.map(ev => ev.fecha));
+
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      locale: 'es',
+      selectable: true,
+      selectAllow: function(selectInfo) {
+        // Bloquear selección si la fecha está ocupada
+        const fecha = selectInfo.startStr;
+        if (fechasOcupadasSet.has(fecha)) {
+          return false; // no permite seleccionar esta fecha
+        }
+        return true;
+      },
+      events: eventosParaCalendario,
+      select: function (info) {
+        document.getElementById('fechaSeleccionada').value = info.startStr;
+      },
+      eventDidMount: function(info) {
+        // Tooltip con título del evento (usando title del HTML)
+        info.el.setAttribute('title', info.event.title);
+      }
+    });
+    calendar.render();
+
+    // Código para cargar horarios y materiales según lugar seleccionado
+    const lugar = document.getElementById("lugar");
+    const horarioContainer = document.getElementById("horarioContainer");
+    const elementosContainer = document.getElementById("elementosContainer");
+
+    lugar.addEventListener("change", function () {
+      const lugarSeleccionado = this.value;
+      let horarios = "";
+      let elementos = "";
+
+      if (lugarSeleccionado === "Auditorio") {
+        horarios = `<label>Horario:</label>
+          <select name="hora" required>
+            <option value="">--Selecciona un horario--</option>
+            <option>08:00 - 10:00</option>
+            <option>10:30 - 12:30</option>
+            <option>13:00 - 15:00</option>
+            <option>15:30 - 17:30</option>
+            <option>18:00 - 20:00</option>
+          </select>`;
+        elementos = `
+          <label>Elementos disponibles:</label>
+          <div class="elementos-disponibles">
+            <label><input type="checkbox" name="elementos" value="Proyector" /> Proyector</label>
+            <label><input type="checkbox" name="elementos" value="Micrófono" /> Micrófono</label>
+            <label><input type="checkbox" name="elementos" value="Telón" /> Telón</label>
+            <label><input type="checkbox" name="elementos" value="Iluminación" /> Iluminación</label>
+            <label><input type="checkbox" name="elementos" value="Sistema de Sonido" /> Sistema de Sonido</label>
+            <label><input type="checkbox" name="elementos" value="Pizarra" /> Pizarra</label>
+          </div>`;
+      } else if (lugarSeleccionado === "Biblioteca") {
+        horarios = `<label>Horario:</label>
+          <select name="hora" required>
+            <option value="">--Selecciona un horario--</option>
+            <option>09:00 - 11:00</option>
+            <option>11:30 - 13:30</option>
+            <option>14:00 - 16:00</option>
+            <option>16:30 - 18:30</option>
+          </select>`;
+        elementos = `
+          <label>Elementos disponibles:</label>
+          <div class="elementos-disponibles">
+            <label><input type="checkbox" name="elementos" value="Mesas" /> Mesas</label>
+            <label><input type="checkbox" name="elementos" value="Sillas" /> Sillas</label>
+            <label><input type="checkbox" name="elementos" value="Computador" /> Computador</label>
+            <label><input type="checkbox" name="elementos" value="Wi-Fi" /> Wi-Fi</label>
+            <label><input type="checkbox" name="elementos" value="Impresora" /> Impresora</label>
+            <label><input type="checkbox" name="elementos" value="Pizarras" /> Pizarras</label>
+          </div>`;
+      } else if (lugarSeleccionado === "Coliseo") {
+        horarios = `<label>Horario:</label>
+          <select name="hora" required>
+            <option value="">--Selecciona un horario--</option>
+            <option>07:00 - 09:00</option>
+            <option>09:30 - 11:30</option>
+            <option>12:00 - 14:00</option>
+            <option>14:30 - 16:30</option>
+            <option>17:00 - 19:00</option>
+          </select>`;
+        elementos = `
+          <label>Elementos disponibles:</label>
+          <div class="elementos-disponibles">
+            <label><input type="checkbox" name="elementos" value="Tarima" /> Tarima</label>
+            <label><input type="checkbox" name="elementos" value="Parlantes" /> Parlantes</label>
+            <label><input type="checkbox" name="elementos" value="Sillas" /> Sillas</label>
+            <label><input type="checkbox" name="elementos" value="Iluminación" /> Iluminación</label>
+            <label><input type="checkbox" name="elementos" value="Proyector" /> Proyector</label>
+            <label><input type="checkbox" name="elementos" value="Camarógrafo" /> Camarógrafo</label>
+          </div>`;
+      } else if (lugarSeleccionado === "Hall 2") {
+        horarios = `<label>Horario:</label>
+          <select name="hora" required>
+            <option value="">--Selecciona un horario--</option>
+            <option>08:00 - 10:00</option>
+            <option>10:30 - 12:30</option>
+            <option>13:00 - 15:00</option>
+            <option>15:30 - 17:30</option>
+          </select>`;
+        elementos = `
+          <label>Elementos disponibles:</label>
+          <div class="elementos-disponibles">
+            <label><input type="checkbox" name="elementos" value="Mesas" /> Mesas</label>
+            <label><input type="checkbox" name="elementos" value="Sillas" /> Sillas</label>
+            <label><input type="checkbox" name="elementos" value="Pantalla" /> Pantalla</label>
+            <label><input type="checkbox" name="elementos" value="Wi-Fi" /> Wi-Fi</label>
+            <label><input type="checkbox" name="elementos" value="Sistema de Sonido" /> Sistema de Sonido</label>
+          </div>`;
+      } else if (lugarSeleccionado === "Sala Multimedia") {
+        horarios = `<label>Horario:</label>
+          <select name="hora" required>
+            <option value="">--Selecciona un horario--</option>
+            <option>09:00 - 11:00</option>
+            <option>11:30 - 13:30</option>
+            <option>14:00 - 16:00</option>
+            <option>16:30 - 18:30</option>
+            <option>19:00 - 21:00</option>
+          </select>`;
+        elementos = `
+          <label>Elementos disponibles:</label>
+          <div class="elementos-disponibles">
+            <label><input type="checkbox" name="elementos" value="Computadores" /> Computadores</label>
+            <label><input type="checkbox" name="elementos" value="Proyector" /> Proyector</label>
+            <label><input type="checkbox" name="elementos" value="Micrófono" /> Micrófono</label>
+            <label><input type="checkbox" name="elementos" value="Sistema de Sonido" /> Sistema de Sonido</label>
+            <label><input type="checkbox" name="elementos" value="Cámaras" /> Cámaras</label>
+            <label><input type="checkbox" name="elementos" value="Pantallas Interactivas" /> Pantallas Interactivas</label>
+          </div>`;
+      } else {
+        horarios = "";
+        elementos = "";
+      }
+
+      horarioContainer.innerHTML = horarios;
+      elementosContainer.innerHTML = elementos;
+    });
+
+    document.getElementById("formEvento").addEventListener("submit", function (e) {
+      const checkedElements = Array.from(document.querySelectorAll('input[name="elementos"]:checked'))
+        .map(input => input.value);
+      document.getElementById('materiales').value = checkedElements.join(', ');
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,86 @@
+<!-- NAVBAR mejorada, más grande, mantiene estructura y área igual -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-gradient-custom shadow-sm fixed-top py-3">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand fw-bold d-flex align-items-center fs-3" href="{{ url_for('jefe_panel') }}">
+      <i class="bi bi-stars me-3" style="color:#ffd700; font-size: 1.8rem;"></i> SIGED
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-3 fs-5">
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center px-3 py-2 rounded" href="{{ url_for('jefe_panel') }}">
+            <i class="bi bi-speedometer2 me-2 fs-4"></i> Panel
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center px-3 py-2 rounded" href="{{ url_for('historial_eventos') }}">
+            <i class="bi bi-clock-history me-2 fs-4"></i> Historial
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center px-3 py-2 rounded" href="{{ url_for('enviar_solicitud_admin') }}">
+            <i class="bi bi-file-earmark-text me-2 fs-4"></i> Solicitud Admin
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center px-3 py-2 rounded" href="{{ url_for('areas_admin') }}">
+            <i class="bi bi-diagram-3 me-2 fs-4"></i> Áreas
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-danger d-flex align-items-center px-3 py-2 rounded" href="{{ url_for('logout') }}">
+            <i class="bi bi-box-arrow-right me-2 fs-4"></i> Salir
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Estilos y efecto scroll -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+<style>
+  body {
+    padding-top: 85px; /* Más alto por navbar grande */
+  }
+
+  .bg-gradient-custom {
+    background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+    transition: background 0.5s ease-in-out, box-shadow 0.3s ease;
+  }
+
+  .navbar-nav .nav-link {
+    transition: all 0.3s ease;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+  }
+
+  .navbar-nav .nav-link:hover,
+  .navbar-nav .nav-link:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffd700;
+    text-decoration: none;
+  }
+
+  .navbar.scrolled {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+    backdrop-filter: saturate(180%) blur(12px);
+    background: rgba(15, 32, 39, 0.95) !important;
+  }
+</style>
+
+<script>
+  // Efecto al hacer scroll para darle sombra y blur al navbar
+  window.addEventListener("scroll", function () {
+    const navbar = document.querySelector(".navbar");
+    if(window.scrollY > 10){
+      navbar.classList.add("scrolled");
+    } else {
+      navbar.classList.remove("scrolled");
+    }
+  });
+</script>
